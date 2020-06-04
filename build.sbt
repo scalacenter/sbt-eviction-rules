@@ -13,10 +13,10 @@ inThisBuild(List(
   )
 ))
 
-lazy val `sbt-eviction-warnings` = project
+lazy val `sbt-eviction-rules` = project
   .in(file("."))
   .enablePlugins(ScriptedPlugin)
-  .aggregate(`sbt-eviction-warnings-dummy`)
+  .aggregate(`sbt-eviction-rules-dummy`)
   .settings(
     sbtPlugin := true,
     scriptedLaunchOpts += "-Dplugin.version=" + version.value,
@@ -26,7 +26,7 @@ lazy val `sbt-eviction-warnings` = project
     sonatypeProfileName := "io.github.alexarchambault"
   )
 
-lazy val `sbt-eviction-warnings-dummy` = project
+lazy val `sbt-eviction-rules-dummy` = project
   .in(file("target/dummy"))
   .settings(
     sonatypeProfileName := "io.github.alexarchambault"
