@@ -55,6 +55,25 @@ object EvictionRulesPlugin extends AutoPlugin {
 
 
   override def projectSettings = Def.settings(
+
+    // evicted implementation that prints project names too
+    // adapted from https://github.com/sbt/sbt/blob/b1192c9021970fdd4252498ca5fcf9d7cffa9b32/main/src/main/scala/sbt/Defaults.scala#L2644-L2653
+    evicted := {
+      import ShowLines._
+      val id = thisProject.value.id
+      val report = (Classpaths.updateTask tag (Tags.Update, Tags.Network)).value
+      val log = streams.value.log
+      val ew =
+        EvictionWarning(ivyModule.value, (evictionWarningOptions in evicted).value, report)
+      val warnings = ew.lines
+      val info = sbt.sbtevictionrules.Helper.evictionWarningsInfo(ew)
+      if (warnings.nonEmpty)
+        log.warn((s"Found eviction warnings in $id:" +: warnings).mkString(System.lineSeparator))
+      if (info.nonEmpty)
+        log.info((s"Found non problematic eviction(s) in $id:" +: info).mkString(System.lineSeparator))
+      ew
+    },
+
     evictionRules := Seq.empty,
     evictionWarningOptions.in(evicted) := {
       val sv = scalaVersion.value
