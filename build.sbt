@@ -28,3 +28,6 @@ lazy val `sbt-eviction-warnings` = project
 
 lazy val `sbt-eviction-warnings-dummy` = project
   .in(file("target/dummy"))
+  .settings(
+    sonatypeProfileName := "io.github.alexarchambault"
+  )
