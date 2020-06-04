@@ -1,12 +1,12 @@
 package sbtbetterevicted
 
+import java.util.concurrent.ConcurrentHashMap
+
+import coursier.version.{ModuleMatchers, VersionCompatibility}
 import sbt._
 import sbt.Keys._
-import sbt.plugins.JvmPlugin
 import sbt.librarymanagement.ScalaModuleInfo
-import coursier.version.VersionCompatibility
-import coursier.version.ModuleMatchers
-import java.util.concurrent.ConcurrentHashMap
+import sbt.plugins.JvmPlugin
 
 object EvictionRulesPlugin extends AutoPlugin {
 
@@ -14,6 +14,8 @@ object EvictionRulesPlugin extends AutoPlugin {
   override def requires = JvmPlugin
 
   object autoImport {
+    val evictionWarnings = taskKey[Seq[String]]("")
+    val evictionCheck = taskKey[Unit]("")
     val evictionRules = settingKey[Seq[ModuleID]]("")
   }
   import autoImport._
@@ -55,6 +57,47 @@ object EvictionRulesPlugin extends AutoPlugin {
 
 
   override def projectSettings = Def.settings(
+
+    // like evicted, but only prints warnings
+    // adapted from https://github.com/sbt/sbt/blob/b1192c9021970fdd4252498ca5fcf9d7cffa9b32/main/src/main/scala/sbt/Defaults.scala#L2644-L2653
+    evictionWarnings := {
+      import ShowLines._
+      val id = thisProject.value.id
+      val report = (Classpaths.updateTask tag (Tags.Update, Tags.Network)).value
+      val log = streams.value.log
+      val ew =
+        EvictionWarning(ivyModule.value, (evictionWarningOptions in evicted).value, report)
+      val warnings = ew.lines
+      if (warnings.nonEmpty)
+        log.warn((s"Found eviction warnings in $id:" +: warnings).mkString(System.lineSeparator))
+      warnings
+    },
+
+    evictionCheck := {
+      val id = thisProject.value.id
+      val warnings = evictionWarnings.value
+      if (warnings.nonEmpty)
+        sys.error(s"Error, found eviction warnings in $id")
+    },
+
+    // evicted implementation that prints project names too
+    // adapted from https://github.com/sbt/sbt/blob/b1192c9021970fdd4252498ca5fcf9d7cffa9b32/main/src/main/scala/sbt/Defaults.scala#L2644-L2653
+    evicted := {
+      import ShowLines._
+      val id = thisProject.value.id
+      val report = (Classpaths.updateTask tag (Tags.Update, Tags.Network)).value
+      val log = streams.value.log
+      val ew =
+        EvictionWarning(ivyModule.value, (evictionWarningOptions in evicted).value, report)
+      val warnings = ew.lines
+      val info = sbt.sbtevictionrules.Helper.evictionWarningsInfo(ew)
+      if (warnings.nonEmpty)
+        log.warn((s"Found eviction warnings in $id:" +: warnings).mkString(System.lineSeparator))
+      if (info.nonEmpty)
+        log.info((s"Found non problematic eviction(s) in $id:" +: info).mkString(System.lineSeparator))
+      ew
+    },
+
     evictionRules := Seq.empty,
     evictionWarningOptions.in(evicted) := {
       val sv = scalaVersion.value
