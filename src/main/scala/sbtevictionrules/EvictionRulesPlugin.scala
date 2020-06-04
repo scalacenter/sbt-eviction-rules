@@ -1,12 +1,12 @@
 package sbtbetterevicted
 
+import java.util.concurrent.ConcurrentHashMap
+
+import coursier.version.{ModuleMatchers, VersionCompatibility}
 import sbt._
 import sbt.Keys._
-import sbt.plugins.JvmPlugin
 import sbt.librarymanagement.ScalaModuleInfo
-import coursier.version.VersionCompatibility
-import coursier.version.ModuleMatchers
-import java.util.concurrent.ConcurrentHashMap
+import sbt.plugins.JvmPlugin
 
 object EvictionRulesPlugin extends AutoPlugin {
 
