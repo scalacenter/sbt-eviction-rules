@@ -11,9 +11,9 @@ This plugin:
 
 Add to `project/plugins.sbt`:
 ```scala
-addSbtPlugin("io.github.alexarchambault.sbt" % "sbt-eviction-warnings" % "0.1.0")
+addSbtPlugin("io.github.alexarchambault.sbt" % "sbt-eviction-rules" % "0.1.0")
 ```
-The latest version is [![Maven Central](https://img.shields.io/maven-central/v/io.github.alexarchambault.sbt/sbt-eviction-warnings-dummy.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.alexarchambault.sbt/sbt-eviction-warnings-dummy).
+The latest version is [![Maven Central](https://img.shields.io/maven-central/v/io.github.alexarchambault.sbt/sbt-eviction-rules-dummy.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.alexarchambault.sbt/sbt-eviction-rules-dummy).
 
 ## Better output
 
@@ -103,7 +103,7 @@ By default, sbt assumes that
 If any eviction brings an incompatible version per those defaults, sbt warns about it in `update`
 and gives more details in `evicted`.
 
-sbt-eviction-warnings then allows to ignore the warnings that you think can be safely ignored.
+sbt-eviction-rules then allows to ignore the warnings that you think can be safely ignored.
 
 Note that there can be slight discrepancies between the checks
 performed by `evictionRules` and those performed by default by sbt:
