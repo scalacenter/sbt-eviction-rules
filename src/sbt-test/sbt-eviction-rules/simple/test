@@ -1,3 +1,6 @@
 > update
 > evicted
 > check
+-> a/evictionCheck
+-> b/evictionCheck
+> c/evictionCheck
