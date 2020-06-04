@@ -13,13 +13,18 @@ inThisBuild(List(
   )
 ))
 
-sbtPlugin := true
-enablePlugins(ScriptedPlugin)
-scriptedLaunchOpts += "-Dplugin.version=" + version.value
-scriptedBufferLog := false
+lazy val `sbt-eviction-warnings` = project
+  .in(file("."))
+  .enablePlugins(ScriptedPlugin)
+  .aggregate(`sbt-eviction-warnings-dummy`)
+  .settings(
+    sbtPlugin := true,
+    scriptedLaunchOpts += "-Dplugin.version=" + version.value,
+    scriptedBufferLog := false,
+    name := "sbt-eviction-rules",
+    libraryDependencies += "io.get-coursier" %% "versions" % "0.2.0",
+    sonatypeProfileName := "io.github.alexarchambault"
+  )
 
-name := "sbt-eviction-rules"
-
-libraryDependencies += "io.get-coursier" %% "versions" % "0.2.0"
-
-sonatypeProfileName := "io.github.alexarchambault"
+lazy val `sbt-eviction-warnings-dummy` = project
+  .in(file("target/dummy"))
