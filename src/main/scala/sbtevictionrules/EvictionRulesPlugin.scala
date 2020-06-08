@@ -56,6 +56,19 @@ object EvictionRulesPlugin extends AutoPlugin {
     }
   }
 
+  private def rulesSetting: Def.Initialize[Seq[(ModuleMatchers, VersionCompatibility)]] = Def.setting {
+    val sv = scalaVersion.value
+    val sbv = scalaBinaryVersion.value
+    evictionRules.value.map { mod =>
+      val name = mod.actualName(sv, sbv)
+      val compat = VersionCompatibility(mod.revision).getOrElse {
+        sys.error(s"Unrecognized compatibility type: ${mod.revision}")
+      }
+
+      ModuleMatchers.only(mod.organization, name) -> compat
+    }
+  }
+
 
   override def projectSettings = Def.settings(
 
@@ -114,17 +127,20 @@ object EvictionRulesPlugin extends AutoPlugin {
     evictionWarningOptions.in(evicted) := {
       val sv = scalaVersion.value
       val sbv = scalaBinaryVersion.value
-
-      val rules = evictionRules.value.map { mod =>
-        val name = mod.actualName(sv, sbv)
-        val compat = VersionCompatibility(mod.revision).getOrElse {
-          sys.error(s"Unrecognized compatibility type: ${mod.revision}")
-        }
-
-        ModuleMatchers.only(mod.organization, name) -> compat
-      }
-
+      val rules = rulesSetting.value
       val previous = evictionWarningOptions.in(evicted).value
+
+      previous.withGuessCompatible(
+        viaEvictionRules(rules, sv, sbv)
+          .orElse(pf(previous.guessCompatible))
+      )
+    },
+    evictionWarningOptions.in(update) := {
+      val sv = scalaVersion.value
+      val sbv = scalaBinaryVersion.value
+      val rules = rulesSetting.value
+      val previous = evictionWarningOptions.in(update).value
+
       previous.withGuessCompatible(
         viaEvictionRules(rules, sv, sbv)
           .orElse(pf(previous.guessCompatible))
