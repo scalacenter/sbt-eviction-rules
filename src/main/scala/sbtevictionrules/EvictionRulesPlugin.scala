@@ -1,4 +1,4 @@
-package sbtbetterevicted
+package sbtevictionrules
 
 import java.util.concurrent.ConcurrentHashMap
 
