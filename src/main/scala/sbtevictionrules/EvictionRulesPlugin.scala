@@ -69,6 +69,9 @@ object EvictionRulesPlugin extends AutoPlugin {
     }
   }
 
+  override def buildSettings = Def.settings(
+    evictionRules := Seq.empty
+  )
 
   override def projectSettings = Def.settings(
 
@@ -123,7 +126,6 @@ object EvictionRulesPlugin extends AutoPlugin {
       ew
     },
 
-    evictionRules := Seq.empty,
     evictionWarningOptions.in(evicted) := {
       val sv = scalaVersion.value
       val sbv = scalaBinaryVersion.value
