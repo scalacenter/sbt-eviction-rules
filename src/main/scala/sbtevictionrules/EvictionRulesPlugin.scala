@@ -1,4 +1,4 @@
-package sbtbetterevicted
+package sbtevictionrules
 
 import java.util.concurrent.ConcurrentHashMap
 
@@ -16,6 +16,7 @@ object EvictionRulesPlugin extends AutoPlugin {
   object autoImport {
     val evictionWarnings = taskKey[Seq[String]]("")
     val evictionCheck = taskKey[Unit]("")
+    val evictionIntransitiveCheck = taskKey[Unit]("")
     val evictionRules = settingKey[Seq[ModuleID]]("")
   }
   import autoImport._
@@ -55,6 +56,22 @@ object EvictionRulesPlugin extends AutoPlugin {
     }
   }
 
+  private def rulesSetting: Def.Initialize[Seq[(ModuleMatchers, VersionCompatibility)]] = Def.setting {
+    val sv = scalaVersion.value
+    val sbv = scalaBinaryVersion.value
+    evictionRules.value.map { mod =>
+      val name = mod.actualName(sv, sbv)
+      val compat = VersionCompatibility(mod.revision).getOrElse {
+        sys.error(s"Unrecognized compatibility type: ${mod.revision}")
+      }
+
+      ModuleMatchers.only(mod.organization, name) -> compat
+    }
+  }
+
+  override def buildSettings = Def.settings(
+    evictionRules := Seq.empty
+  )
 
   override def projectSettings = Def.settings(
 
@@ -73,7 +90,18 @@ object EvictionRulesPlugin extends AutoPlugin {
       warnings
     },
 
-    evictionCheck := {
+    evictionCheck := Def.taskDyn {
+      import sbtevictionrules.internal.Structure._
+
+      val state0 = state.value
+      val projectRef = thisProjectRef.value
+      val projects = allRecursiveInterDependencies(state0, projectRef)
+
+      val task = evictionIntransitiveCheck.forAllProjects(state0, projectRef +: projects)
+      Def.task(task.value)
+    }.value,
+
+    evictionIntransitiveCheck := {
       val id = thisProject.value.id
       val warnings = evictionWarnings.value
       if (warnings.nonEmpty)
@@ -90,7 +118,7 @@ object EvictionRulesPlugin extends AutoPlugin {
       val ew =
         EvictionWarning(ivyModule.value, (evictionWarningOptions in evicted).value, report)
       val warnings = ew.lines
-      val info = sbt.sbtevictionrules.Helper.evictionWarningsInfo(ew)
+      val info = sbt.privatesbt.sbtevictionrules.Helper.evictionWarningsInfo(ew)
       if (warnings.nonEmpty)
         log.warn((s"Found eviction warnings in $id:" +: warnings).mkString(System.lineSeparator))
       if (info.nonEmpty)
@@ -98,21 +126,23 @@ object EvictionRulesPlugin extends AutoPlugin {
       ew
     },
 
-    evictionRules := Seq.empty,
     evictionWarningOptions.in(evicted) := {
       val sv = scalaVersion.value
       val sbv = scalaBinaryVersion.value
-
-      val rules = evictionRules.value.map { mod =>
-        val name = mod.actualName(sv, sbv)
-        val compat = VersionCompatibility(mod.revision).getOrElse {
-          sys.error(s"Unrecognized compatibility type: ${mod.revision}")
-        }
-
-        ModuleMatchers.only(mod.organization, name) -> compat
-      }
-
+      val rules = rulesSetting.value
       val previous = evictionWarningOptions.in(evicted).value
+
+      previous.withGuessCompatible(
+        viaEvictionRules(rules, sv, sbv)
+          .orElse(pf(previous.guessCompatible))
+      )
+    },
+    evictionWarningOptions.in(update) := {
+      val sv = scalaVersion.value
+      val sbv = scalaBinaryVersion.value
+      val rules = rulesSetting.value
+      val previous = evictionWarningOptions.in(update).value
+
       previous.withGuessCompatible(
         viaEvictionRules(rules, sv, sbv)
           .orElse(pf(previous.guessCompatible))

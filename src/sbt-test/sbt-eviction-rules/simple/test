@@ -3,4 +3,6 @@
 > check
 -> a/evictionCheck
 -> b/evictionCheck
+> b1/evictionIntransitiveCheck
+-> b1/evictionCheck
 > c/evictionCheck

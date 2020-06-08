@@ -1,4 +1,4 @@
-package sbt.sbtevictionrules
+package sbt.privatesbt.sbtevictionrules
 
 import sbt.librarymanagement.EvictionWarning
 
