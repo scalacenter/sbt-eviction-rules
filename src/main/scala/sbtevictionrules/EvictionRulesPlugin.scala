@@ -16,6 +16,7 @@ object EvictionRulesPlugin extends AutoPlugin {
   object autoImport {
     val evictionWarnings = taskKey[Seq[String]]("")
     val evictionCheck = taskKey[Unit]("")
+    val evictionIntransitiveCheck = taskKey[Unit]("")
     val evictionRules = settingKey[Seq[ModuleID]]("")
   }
   import autoImport._
@@ -73,7 +74,18 @@ object EvictionRulesPlugin extends AutoPlugin {
       warnings
     },
 
-    evictionCheck := {
+    evictionCheck := Def.taskDyn {
+      import sbtevictionrules.internal.Structure._
+
+      val state0 = state.value
+      val projectRef = thisProjectRef.value
+      val projects = allRecursiveInterDependencies(state0, projectRef)
+
+      val task = evictionIntransitiveCheck.forAllProjects(state0, projectRef +: projects)
+      Def.task(task.value)
+    }.value,
+
+    evictionIntransitiveCheck := {
       val id = thisProject.value.id
       val warnings = evictionWarnings.value
       if (warnings.nonEmpty)

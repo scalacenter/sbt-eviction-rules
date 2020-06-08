@@ -34,6 +34,14 @@ lazy val b = project
     check := hasEvictions.value
   )
 
+lazy val b1 = project
+  .dependsOn(b)
+  .settings(
+    shared,
+    evictionRules += "org.scala-lang.modules" %% "scala-xml" % "semver",
+    check := noEvictions.value
+  )
+
 lazy val c = project
   .settings(
     shared,
