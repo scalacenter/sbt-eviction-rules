@@ -90,7 +90,7 @@ object EvictionRulesPlugin extends AutoPlugin {
       val ew =
         EvictionWarning(ivyModule.value, (evictionWarningOptions in evicted).value, report)
       val warnings = ew.lines
-      val info = sbt.sbtevictionrules.Helper.evictionWarningsInfo(ew)
+      val info = sbt.privatesbt.sbtevictionrules.Helper.evictionWarningsInfo(ew)
       if (warnings.nonEmpty)
         log.warn((s"Found eviction warnings in $id:" +: warnings).mkString(System.lineSeparator))
       if (info.nonEmpty)
