@@ -29,6 +29,7 @@ lazy val `sbt-eviction-rules` = project
 
 lazy val `sbt-eviction-rules-dummy` = project
   .in(file("target/dummy"))
+  .disablePlugins(MimaPlugin)
   .settings(
     sonatypeProfileName := "io.github.alexarchambault"
   )
