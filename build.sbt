@@ -23,7 +23,8 @@ lazy val `sbt-eviction-rules` = project
     scriptedBufferLog := false,
     name := "sbt-eviction-rules",
     libraryDependencies += "io.get-coursier" %% "versions" % "0.2.0",
-    sonatypeProfileName := "io.github.alexarchambault"
+    sonatypeProfileName := "io.github.alexarchambault",
+    compatibilityIgnoreVersion("0.1.0")
   )
 
 lazy val `sbt-eviction-rules-dummy` = project
