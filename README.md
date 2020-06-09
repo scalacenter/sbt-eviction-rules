@@ -110,3 +110,9 @@ performed by `evictionRules` and those performed by default by sbt:
 the checks done by `evictionRules` are handled by the
 [coursier versions library](https://github.com/coursier/versions), while those
 of sbt are handled by the [`sbt/librarymanagement` library](https://github.com/sbt/librarymanagement).
+
+## Acknowledgments
+
+<img src="https://scala.epfl.ch/resources/img/scala-center-swirl.png" width="40px" />
+
+*sbt-eviction-rules* is funded by the [Scala Center](https://scala.epfl.ch).
