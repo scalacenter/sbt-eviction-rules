@@ -13,9 +13,29 @@ Add to `project/plugins.sbt`:
 ```scala
 addSbtPlugin("io.github.alexarchambault.sbt" % "sbt-eviction-rules" % "0.1.0")
 ```
-The latest version is [![Maven Central](https://img.shields.io/maven-central/v/io.github.alexarchambault.sbt/sbt-eviction-rules-dummy.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.alexarchambault.sbt/sbt-eviction-rules-dummy).
+The latest version is [![Maven Central](https://img.shields.io/maven-central/v/io.github.alexarchambault.sbt/sbt-eviction-rules-dummy_2.12.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.alexarchambault.sbt/sbt-eviction-rules-dummy_2.12).
 
 ## Better output
+
+### `evictionWarnings`
+
+`evictionWarnings` prints only problematic evictions:
+```
+> evictionWarnings
+[warn] Found eviction warnings in b:
+[warn] Found version conflict(s) in library dependencies; some are suspected to be binary incompatible:
+[warn]
+[warn] 	* org.scala-lang.modules:scala-xml_2.12:1.2.0 is selected over {1.0.6, 1.0.6}
+[warn] 	    +- eu.timepit:refined_2.12:0.9.12                     (depends on 1.2.0)
+[warn] ct    +- org.scala-lang:scala-compiler:2.12.11              (depends on 1.0.6)
+[warn] Found eviction warnings in a:
+[warn] Found version conflict(s) in library dependencies; some are suspected to be binary incompatible:
+[warn]
+[warn] 	* org.scala-lang.modules:scala-xml_2.12:1.2.0 is selected over {1.0.6, 1.0.6}
+[warn] 	    +- eu.timepit:refined_2.12:0.9.12                     (depends on 1.2.0)
+[warn] 	    +- org.scala-lang:scala-compiler:2.12.11              (depends on 1.0.6)
+[success] Total time: 1 s, completed jun 4 2020 16:05:22
+```
 
 ### `evicted`
 
@@ -41,26 +61,6 @@ The latest version is [![Maven Central](https://img.shields.io/maven-central/v/i
 [info] 	    +- eu.timepit:refined_2.12:0.9.12                     (depends on 1.2.0)
 [info] 	    +- org.scala-lang:scala-compiler:2.12.11              (depends on 1.0.6)
 [success] Total time: 1 s, completed jun 4 2020 15:54:04
-```
-
-### `evictionWarnings`
-
-`evictionWarnings` prints only problematic evictions:
-```
-> evictionWarnings
-[warn] Found eviction warnings in b:
-[warn] Found version conflict(s) in library dependencies; some are suspected to be binary incompatible:
-[warn]
-[warn] 	* org.scala-lang.modules:scala-xml_2.12:1.2.0 is selected over {1.0.6, 1.0.6}
-[warn] 	    +- eu.timepit:refined_2.12:0.9.12                     (depends on 1.2.0)
-[warn] ct    +- org.scala-lang:scala-compiler:2.12.11              (depends on 1.0.6)
-[warn] Found eviction warnings in a:
-[warn] Found version conflict(s) in library dependencies; some are suspected to be binary incompatible:
-[warn]
-[warn] 	* org.scala-lang.modules:scala-xml_2.12:1.2.0 is selected over {1.0.6, 1.0.6}
-[warn] 	    +- eu.timepit:refined_2.12:0.9.12                     (depends on 1.2.0)
-[warn] 	    +- org.scala-lang:scala-compiler:2.12.11              (depends on 1.0.6)
-[success] Total time: 1 s, completed jun 4 2020 16:05:22
 ```
 
 ## Check the absence of problematic evictions
