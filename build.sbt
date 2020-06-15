@@ -1,7 +1,7 @@
 
 inThisBuild(List(
   organization := "io.github.alexarchambault.sbt",
-  homepage := Some(url("https://github.com/alexarchambault/sbt-eviction-rules")),
+  homepage := Some(url("https://github.com/scalacenter/sbt-eviction-rules")),
   licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   developers := List(
     Developer(
