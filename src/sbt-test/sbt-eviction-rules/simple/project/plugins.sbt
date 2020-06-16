@@ -1,1 +1,1 @@
-addSbtPlugin("io.github.alexarchambault.sbt" % "sbt-eviction-rules" % sys.props("plugin.version"))
+addSbtPlugin("ch.epfl.scala" % "sbt-eviction-rules" % sys.props("plugin.version"))

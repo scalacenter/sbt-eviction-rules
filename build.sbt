@@ -1,7 +1,7 @@
 
 inThisBuild(List(
-  organization := "io.github.alexarchambault.sbt",
-  homepage := Some(url("https://github.com/alexarchambault/sbt-eviction-rules")),
+  organization := "ch.epfl.scala",
+  homepage := Some(url("https://github.com/scalacenter/sbt-eviction-rules")),
   licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   developers := List(
     Developer(
@@ -23,13 +23,17 @@ lazy val `sbt-eviction-rules` = project
     scriptedBufferLog := false,
     name := "sbt-eviction-rules",
     libraryDependencies += "io.get-coursier" %% "versions" % "0.2.0",
-    sonatypeProfileName := "io.github.alexarchambault",
-    compatibilityIgnoreVersion("0.1.0")
+    compatibilityIgnoreVersion("0.1.0"),
+    mimaPreviousArtifacts := {
+      mimaPreviousArtifacts.value.map { mod =>
+        if (mod.revision == "0.2.0")
+          mod.withOrganization("io.github.alexarchambault.sbt")
+        else
+          mod
+      }
+    }
   )
 
 lazy val `sbt-eviction-rules-dummy` = project
   .in(file("target/dummy"))
   .disablePlugins(MimaPlugin)
-  .settings(
-    sonatypeProfileName := "io.github.alexarchambault"
-  )
