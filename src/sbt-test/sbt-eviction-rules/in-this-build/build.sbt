@@ -1,5 +1,5 @@
 
-evictionRules.in(ThisBuild) += "org.scala-lang.modules" %% "scala-xml" % "semver"
+evictionRules.in(ThisBuild) += "org.scala-lang.modules" %% "scala-xml" % "semver-spec"
 
 scalaVersion := "2.12.11"
 libraryDependencies ++= Seq(

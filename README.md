@@ -20,6 +20,7 @@ The latest version is [![Maven Central](https://img.shields.io/maven-central/v/i
 ### `evictionWarnings`
 
 `evictionWarnings` prints only problematic evictions:
+
 ```
 > evictionWarnings
 [warn] Found eviction warnings in b:
@@ -40,6 +41,7 @@ The latest version is [![Maven Central](https://img.shields.io/maven-central/v/i
 ### `evicted`
 
 `evicted` prints which of your projects each printed eviction comes from:
+
 ```
 > evicted
 [warn] Found eviction warnings in b:
@@ -72,8 +74,9 @@ This can be handy to run eviction checks on your CI.
 
 If an eviction is printed as problematic, you can configure evictions to loosen
 its checks with `evictionRules`, like
+
 ```scala
-evictionRules += "org.scala-lang.modules" %% "scala-xml" % "semver"
+evictionRules += "org.scala-lang.modules" %% "scala-xml" % "semver-spec"
 ```
 
 This specifies that `"org.scala-lang.modules" %% "scala-xml"` follows
@@ -81,7 +84,8 @@ semantic versioning, so that it's fine if version `1.2.0` is selected
 where `1.0.6` is expected.
 
 The following compatibility types are available:
-- `semver`: assumes the matched modules follow [semantic versioning](https://semver.org),
+- `early-semver`: assumes the matched modules follow a variant of [Semantic Versioning](https://semver.org) that enforces compatibility within 0.1.z.
+- `semver-spec`: assumes the matched modules follow [Semantic Versioning Spec](https://semver.org) that assumes no compatibility within 0.1.z.
 - `pvp`: assumes the matched modules follow [package versioning policy](https://pvp.haskell.org) (quite common in Scala),
 - `always`: assumes all versions of the matched modules are compatible with each other,
 - `strict`: requires exact matches between the wanted and the selected versions of the matched modules.
@@ -89,9 +93,10 @@ The following compatibility types are available:
 ## Module patterns
 
 `evictionRules` accepts `*` as organization or module name, or as parts of them, to match several modules at once:
+
 ```scala
 evictionRules += "io.get-coursier" %% "*" % "pvp"
-evictionRules += "org.typelevel" %% "cats-*" % "semver"
+evictionRules += "org.typelevel" %% "cats-*" % "semver-spec"
 ```
 
 ## About the default eviction rules in sbt
