@@ -1,25 +1,36 @@
 # sbt-eviction-rules
 
-An sbt plugin enhancing the `evicted` key.
+An sbt plugin enhancing the `evicted` task.
 
 This plugin:
-- makes the output of `evicted` slightly more readable
-- allows to easily run eviction checks on your CI
-- allows to more easily configure evictions that can be ignored.
 
-## How to use
+1. makes the output of `evicted` slightly more readable
+2. allows you to easily run eviction checks on your CI
+3. allows you to more easily configure evictions that can be ignored
+   (to avoid false positive warnings).
+
+Note: starting from version 1.4.0, sbt already implements the last
+point (it takes into account the underlying versioning scheme of a
+library when it computes eviction warnings). Nevertheless, this
+plugin can be useful if your project uses libraries that don’t (yet)
+publish their versioning scheme.
+
+## Installation
 
 Add to `project/plugins.sbt`:
 ```scala
-addSbtPlugin("io.github.alexarchambault.sbt" % "sbt-eviction-rules" % "0.1.0")
+addSbtPlugin("ch.epfl.scala" % "sbt-eviction-rules" % "1.0.0")
 ```
-The latest version is [![Maven Central](https://img.shields.io/maven-central/v/io.github.alexarchambault.sbt/sbt-eviction-rules-dummy_2.12.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.alexarchambault.sbt/sbt-eviction-rules-dummy_2.12).
+The latest version is [![Maven Central](https://img.shields.io/maven-central/v/ch.epfl.scala/sbt-eviction-rules-dummy_2.12.svg)](https://maven-badges.herokuapp.com/maven-central/ch.epfl.scala/sbt-eviction-rules-dummy_2.12).
 
-## Better output
+## Usage
+
+The plugin provides the following tasks.
 
 ### `evictionWarnings`
 
-`evictionWarnings` prints only problematic evictions:
+Unlike the default `evicted` task, the `evctionWarnings` task reports only problematic
+evictions (ie, libraries that have been evicted by binary incompatible versions):
 
 ```
 > evictionWarnings
@@ -38,9 +49,18 @@ The latest version is [![Maven Central](https://img.shields.io/maven-central/v/i
 [success] Total time: 1 s, completed jun 4 2020 16:05:22
 ```
 
+### `evictionCheck`
+
+This task turns the eviction warnings into errors. It succeeds only if
+there are no eviction warnings in your build.
+
+You typically want to invoke this task in your CI, to make sure that no
+pull requests introduce eviction warnings.
+
 ### `evicted`
 
-`evicted` prints which of your projects each printed eviction comes from:
+The built-in `evicted` task is overridden to provide a more readable output.
+It prints which of your projects each printed eviction comes from:
 
 ```
 > evicted
@@ -65,15 +85,13 @@ The latest version is [![Maven Central](https://img.shields.io/maven-central/v/i
 [success] Total time: 1 s, completed jun 4 2020 15:54:04
 ```
 
-## Check the absence of problematic evictions
+## Configuration
 
-`evictionCheck` checks that there are no problematic evictions, and fails if there are such evictions.
-This can be handy to run eviction checks on your CI.
+The [recommended versioning scheme] in the Scala ecosystem is a (stricter) variant
+of Semantic Versioning, but not all libraries follow this versioning scheme.
 
-## Easier to configure
-
-If an eviction is printed as problematic, you can configure evictions to loosen
-its checks with `evictionRules`, like
+You can configure which versioning scheme is used by which library by using the
+`evictionRules` setting:
 
 ```scala
 evictionRules += "org.scala-lang.modules" %% "scala-xml" % "semver-spec"
@@ -81,7 +99,7 @@ evictionRules += "org.scala-lang.modules" %% "scala-xml" % "semver-spec"
 
 This specifies that `"org.scala-lang.modules" %% "scala-xml"` follows
 semantic versioning, so that it's fine if version `1.2.0` is selected
-where `1.0.6` is expected.
+where `1.0.6` is expected (ie, no evictions will be reported).
 
 The following compatibility types are available:
 - `early-semver`: assumes the matched modules follow a variant of [Semantic Versioning](https://semver.org) that enforces compatibility within 0.1.z.
@@ -90,7 +108,12 @@ The following compatibility types are available:
 - `always`: assumes all versions of the matched modules are compatible with each other,
 - `strict`: requires exact matches between the wanted and the selected versions of the matched modules.
 
-## Module patterns
+> Note that starting with sbt 1.4.x, libraries can embed the versioning
+> scheme they use in their artifacts metadata, making the `evictionRules`
+> setting unnecessary. This setting is still useful during the transition
+> period.
+
+### Module patterns
 
 `evictionRules` accepts `*` as organization or module name, or as parts of them, to match several modules at once:
 
@@ -108,7 +131,8 @@ By default, sbt assumes that
 If any eviction brings an incompatible version per those defaults, sbt warns about it in `update`
 and gives more details in `evicted`.
 
-sbt-eviction-rules then allows to ignore the warnings that you think can be safely ignored.
+sbt-eviction-rules then allows you to remove false warnings if you know that a library follows
+another versioning scheme than PVP.
 
 Note that there can be slight discrepancies between the checks
 performed by `evictionRules` and those performed by default by sbt:
@@ -121,3 +145,5 @@ of sbt are handled by the [`sbt/librarymanagement` library](https://github.com/s
 <img src="https://scala.epfl.ch/resources/img/scala-center-swirl.png" width="40px" />
 
 *sbt-eviction-rules* is funded by the [Scala Center](https://scala.epfl.ch).
+
+[recommended versioning scheme]: https://docs.scala-lang.org/overviews/core/binary-compatibility-for-library-authors.html#recommended-versioning-scheme

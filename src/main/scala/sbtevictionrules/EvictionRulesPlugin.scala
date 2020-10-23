@@ -14,10 +14,10 @@ object EvictionRulesPlugin extends AutoPlugin {
   override def requires = JvmPlugin
 
   object autoImport {
-    val evictionWarnings = taskKey[Seq[String]]("")
-    val evictionCheck = taskKey[Unit]("")
+    val evictionWarnings = taskKey[Seq[String]]("Reports eviction warnings")
+    val evictionCheck = taskKey[Unit]("Checks that there are no eviction warnings")
     val evictionIntransitiveCheck = taskKey[Unit]("")
-    val evictionRules = settingKey[Seq[ModuleID]]("")
+    val evictionRules = settingKey[Seq[ModuleID]]("Versioning scheme to use for specific modules")
   }
   import autoImport._
 
