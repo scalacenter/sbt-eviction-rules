@@ -108,8 +108,13 @@ semantic versioning, so that it's fine if version `1.2.0` is selected
 where `1.0.6` is expected (ie, no evictions will be reported).
 
 The following compatibility types are available:
-- `early-semver`: assumes the matched modules follow a variant of [Semantic Versioning](https://semver.org) that enforces compatibility within 0.1.z.
-- `semver-spec`: assumes the matched modules follow [Semantic Versioning Spec](https://semver.org) that assumes no compatibility within 0.1.z.
+- `early-semver`: assumes the matched modules follow a variant of [Semantic Versioning](https://semver.org)
+  that guarantees backward binary compatibility between minor releases (e.g., 1.1.1 and 1.2.0),
+  and between patch releases if the major version number is 0 (e.g., 0.7.2 and 0.7.3).
+- `semver-spec`: assumes the matched modules follow [Semantic Versioning](https://semver.org),
+  which guarantees backward binary compatibility between minor releases (e.g., 1.1.1 and 1.2.0),
+  but does not guarantee any compatibility between patch releases if the major version number
+  is 0 (e.g., 0.7.2 and 0.7.3).
 - `pvp`: assumes the matched modules follow [package versioning policy](https://pvp.haskell.org) (quite common in Scala),
 - `always`: assumes all versions of the matched modules are compatible with each other,
 - `strict`: requires exact matches between the wanted and the selected versions of the matched modules.
