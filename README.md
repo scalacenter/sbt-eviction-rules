@@ -1,3 +1,10 @@
+> Note: this project is in maintenance mode because [sbt 1.5.0](https://github.com/sbt/sbt/milestone/68?closed=1)
+> provides equivalent features. See [sbt/sbt#6221](https://github.com/sbt/sbt/pull/6221)
+> for more details.
+> 
+> You can still use the version 1.0.0-RC1 of this plugin in case you
+> are stuck with an old version of sbt.
+
 # sbt-eviction-rules
 
 An sbt plugin enhancing the `evicted` task.
@@ -9,17 +16,16 @@ This plugin:
 3. allows you to more easily configure evictions that can be ignored
    (to avoid false positive warnings).
 
-Note: starting from version 1.4.0, sbt already implements the last
-point (it takes into account the underlying versioning scheme of a
-library when it computes eviction warnings). Nevertheless, this
-plugin can be useful if your project uses libraries that don’t (yet)
-publish their versioning scheme.
+Note: sbt has been gradually providing these features. As of sbt
+1.5.0, all of the features of this plugin are now supported by sbt
+out of the box. Nevertheless, this plugin can be useful if you are
+stuck with an old version of sbt.
 
 ## Installation
 
 Add to `project/plugins.sbt`:
 ```scala
-addSbtPlugin("ch.epfl.scala" % "sbt-eviction-rules" % "1.0.0")
+addSbtPlugin("ch.epfl.scala" % "sbt-eviction-rules" % "1.0.0-RC1")
 ```
 The latest version is [![Maven Central](https://img.shields.io/maven-central/v/ch.epfl.scala/sbt-eviction-rules-dummy_2.12.svg)](https://maven-badges.herokuapp.com/maven-central/ch.epfl.scala/sbt-eviction-rules-dummy_2.12).
 
@@ -102,8 +108,13 @@ semantic versioning, so that it's fine if version `1.2.0` is selected
 where `1.0.6` is expected (ie, no evictions will be reported).
 
 The following compatibility types are available:
-- `early-semver`: assumes the matched modules follow a variant of [Semantic Versioning](https://semver.org) that enforces compatibility within 0.1.z.
-- `semver-spec`: assumes the matched modules follow [Semantic Versioning Spec](https://semver.org) that assumes no compatibility within 0.1.z.
+- `early-semver`: assumes the matched modules follow a variant of [Semantic Versioning](https://semver.org)
+  that guarantees backward binary compatibility between minor releases (e.g., 1.1.1 and 1.2.0),
+  and between patch releases if the major version number is 0 (e.g., 0.7.2 and 0.7.3).
+- `semver-spec`: assumes the matched modules follow [Semantic Versioning](https://semver.org),
+  which guarantees backward binary compatibility between minor releases (e.g., 1.1.1 and 1.2.0),
+  but does not guarantee any compatibility between patch releases if the major version number
+  is 0 (e.g., 0.7.2 and 0.7.3).
 - `pvp`: assumes the matched modules follow [package versioning policy](https://pvp.haskell.org) (quite common in Scala),
 - `always`: assumes all versions of the matched modules are compatible with each other,
 - `strict`: requires exact matches between the wanted and the selected versions of the matched modules.
