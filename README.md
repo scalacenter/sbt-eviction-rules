@@ -1,3 +1,10 @@
+> Note: this project is in maintenance mode because [sbt 1.5.0](https://github.com/sbt/sbt/milestone/68?closed=1)
+> provides equivalent features. See [sbt/sbt#6221](https://github.com/sbt/sbt/pull/6221)
+> for more details.
+> 
+> You can still use the version 1.0.0-RC1 of this plugin in case you
+> are stuck with an old version of sbt.
+
 # sbt-eviction-rules
 
 An sbt plugin enhancing the `evicted` task.
@@ -9,17 +16,16 @@ This plugin:
 3. allows you to more easily configure evictions that can be ignored
    (to avoid false positive warnings).
 
-Note: starting from version 1.4.0, sbt already implements the last
-point (it takes into account the underlying versioning scheme of a
-library when it computes eviction warnings). Nevertheless, this
-plugin can be useful if your project uses libraries that don’t (yet)
-publish their versioning scheme.
+Note: sbt has been gradually providing these features. As of sbt
+1.5.0, all of the features of this plugin are now supported by sbt
+out of the box. Nevertheless, this plugin can be useful if you are
+stuck with an old version of sbt.
 
 ## Installation
 
 Add to `project/plugins.sbt`:
 ```scala
-addSbtPlugin("ch.epfl.scala" % "sbt-eviction-rules" % "1.0.0")
+addSbtPlugin("ch.epfl.scala" % "sbt-eviction-rules" % "1.0.0-RC1")
 ```
 The latest version is [![Maven Central](https://img.shields.io/maven-central/v/ch.epfl.scala/sbt-eviction-rules-dummy_2.12.svg)](https://maven-badges.herokuapp.com/maven-central/ch.epfl.scala/sbt-eviction-rules-dummy_2.12).
 
