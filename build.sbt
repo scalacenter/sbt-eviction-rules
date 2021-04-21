@@ -18,7 +18,7 @@ lazy val `sbt-eviction-rules` = project
     scriptedLaunchOpts += "-Dplugin.version=" + version.value,
     scriptedBufferLog := false,
     name := "sbt-eviction-rules",
-    libraryDependencies += "io.get-coursier" %% "versions" % "0.3.0"
+    libraryDependencies += "io.get-coursier" %% "versions" % "0.3.1"
   )
 
 lazy val `sbt-eviction-rules-dummy` = project
