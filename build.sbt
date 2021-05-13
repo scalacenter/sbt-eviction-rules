@@ -9,6 +9,7 @@ ThisBuild / developers := List(
     url("https://github.com/alexarchambault")
   )
 )
+ThisBuild / versionPolicyIntention := Compatibility.BinaryAndSourceCompatible
 
 lazy val `sbt-eviction-rules` = project
   .in(file("."))
