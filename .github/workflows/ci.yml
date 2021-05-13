@@ -56,7 +56,7 @@ jobs:
       - uses: olafurpg/setup-gpg@v2
 
       - name: Release
-        run: csbt ci-release
+        run: csbt versionCheck ci-release
         env:
           PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
           PGP_SECRET: ${{ secrets.PGP_SECRET }}
